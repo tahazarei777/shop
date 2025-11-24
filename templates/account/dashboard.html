@@ -1,0 +1,211 @@
+{% load static %}
+{% load widget_tweaks %}
+{% load humanize %}
+
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب دفتری | مشتریان</title>
+
+    <!-- Bootstrap 5 RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+    <!-- Font Vazirmatn -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'css/dashboard_customer_style.css' %}">
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body>
+
+    <div class="container mt-3">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>🛍 داشبورد مشتریان</h1>
+        <a href="{% url 'logout' %}" class="btn btn-outline-light btn-lg mt-3 px-5">خروج</a>
+        <a href="{% url 'shop_dashboard' %}" class="btn btn-outline-light btn-lg mt-3 px-5">بازگشت</a>
+    </header>
+
+    <div class="container my-5">
+
+        <!-- مجموع بدهی -->
+        <div class="text-center mb-5">
+            <div class="total-debt-card d-inline-block">
+                <div class="text-secondary small mb-2">مجموع طلبکار</div>
+                <div class="total-debt">تومان   {{ total_debt|intcomma }}</div>
+            </div>
+        </div>
+
+        <!-- Search & Sort Tools -->
+        <form method="get" class="row mb-4 g-3 align-items-center justify-content-center">
+
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-0">
+                        <i data-feather="search" class="text-primary"></i>
+                    </span>
+                    <input type="text" name="query" class="form-control form-control-lg" placeholder="جستجوی مشتری..."
+                        value="{{ request.GET.query }}">
+                </div>
+            </div>
+            <a href="{% url 'export_excel' %}" class="btn btn-info btn-lg mb-4">چاپ فاکتور</a>
+
+            <div class="col-md-3">
+                <select class="form-select form-select-lg" name="sort_by">
+                    <option value="">مرتب‌سازی</option>
+                    <option value="amount_desc">بیشترین بدهی</option>
+                    <option value="amount_asc">کمترین بدهی</option>
+                    <option value="alpha">الفبا</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-lg w-100">اعمال</button>
+            </div>
+
+        </form>
+
+        <!-- Add Customer Button -->
+        <div class="text-center mb-4">
+            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
+                data-bs-target="#addCustomerModal">
+                افزودن مشتری جدید
+            </button>
+        </div>
+
+        <!-- Customer List -->
+        <div id="customerList" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">
+            {% for customer in customers %}
+            {% include 'partials/customer_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
+        <div id="liveToast" class="toast align-items-center text-white bg-primary border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addCustomerModalLabel">🛍 افزودن مشتری جدید</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="addCustomerForm" method="post" action="{% url 'customer_dashboard' %}"
+                        class="needs-validation" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">نام</label>
+                            {{ form.first_name|add_class:"form-control" }}
+                            <div class="invalid-feedback">لطفاً نام مشتری را وارد کنید.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">نام خانوادگی</label>
+                            {{ form.last_name|add_class:"form-control" }}
+                            <div class="invalid-feedback">لطفاً نام خانوادگی مشتری را وارد کنید.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.amount.id_for_label }}" class="form-label">مبلغ نسیه شده (تومان)</label>
+                            {{ form.amount|add_class:"form-control" }}
+                            <div class="invalid-feedback">لطفاً مبلغ را وارد کنید.</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100">افزودن مشتری</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Confirm Delete Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="confirmDeleteLabel">تایید حذف مشتری</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    آیا از حذف این مشتری مطمئن هستید؟
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">حذف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="settleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">تسویه حساب مشتری</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="settleForm">
+                        {% csrf_token %}
+                        <input type="hidden" id="settleCustomerId">
+                        <div class="mb-3">
+                            <label for="settleAmount" class="form-label">مقدار</label>
+                            <input type="number" class="form-control" id="settleAmount" required>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="operation" id="subtract"
+                                    value="subtract" checked>
+                                <label class="form-check-label" for="subtract">کسر از حساب</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="operation" id="add" value="add">
+                                <label class="form-check-label" for="add">اضافه به حساب</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">ثبت</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/dash_customer_js.js' %}"></script>
+
+</body>
+
+</html>

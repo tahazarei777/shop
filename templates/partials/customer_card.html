@@ -1,0 +1,41 @@
+{% load humanize %}
+
+<div class="col">
+    <div class="card customer-card text-center h-100 position-relative
+        {% if customer.is_paid %}border-success border-4{% else %}border-secondary{% endif %}">
+
+        {% if customer.is_paid %}
+        <span class="badge bg-success paid-badge position-absolute top-0 end-0 m-2">
+            تسویه شده
+        </span>
+        {% endif %}
+
+        <div class="card-body d-flex flex-column align-items-center p-4">
+
+            <i data-feather="user" class="icon text-primary mb-3" style="font-size:2rem;"></i>
+
+            <h6 class="fw-bold mb-1">{{ customer.first_name }}</h6>
+            <h6 class="fw-bold text-secondary mb-2">{{ customer.last_name }}</h6>
+
+            {% if customer.created_at %}
+            <small class="text-muted mb-3">
+                {{ customer.created_at|date:"d/m/Y" }}
+            </small>
+            {% endif %}
+
+            <div class="amount mb-4 {% if customer.is_paid %}text-success{% else %}text-danger{% endif %}">
+                {{ customer.amount|intcomma }} تومان
+            </div>
+
+            <div class="d-grid gap-2 w-100">
+                <button class="btn btn-success btn-sm pay-btn" data-id="{{ customer.id }}"data-url="{% url 'settle_customer' customer.id %}">
+                    تسویه حساب
+                </button>
+                <button class="btn btn-danger btn-sm delete-btn" data-id="{{ customer.id }}"
+                    data-url="{% url 'delete_customer' customer.id %}">
+                    حذف
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

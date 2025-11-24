@@ -1,0 +1,113 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+body {
+    font-family: 'Vazirmatn', sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+}
+
+.header {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 2.5rem 0;
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+    text-align: center;
+}
+
+.total-debt-card {
+    background: white;
+    border-radius: 1.2rem;
+    padding: 1.8rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+}
+
+.total-debt-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+}
+
+.total-debt {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.customer-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    background: white;
+}
+
+.customer-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 25px 50px rgba(99, 102, 241, 0.2) !important;
+}
+
+.paid-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.6rem;
+}
+
+.amount {
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.form-control {
+    border-radius: 0.8rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.form-control:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25);
+}
+
+.modal-content {
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+/* انیمیشن Fade-in و Slide-up برای کارت‌ها */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* کارت مشتری */
+.customer-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    background: white;
+    opacity: 0; /* ابتدا مخفی */
+    transform: translateY(30px); /* ابتدا کمی پایین‌تر */
+}
+
+/* کلاس فعال هنگام انیمیشن */
+.customer-card.animate {
+    animation: fadeInUp 0.6s ease forwards;
+}

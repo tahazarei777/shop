@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد مغازه‌دار</title>
+    <link rel="stylesheet" href="{% static 'css/style_dashboard.css' %}">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+
+    <!-- هدر -->
+    <header class="header">
+        <h1>داشبورد فروشگاه</h1>
+        <div class="header-buttons">
+            <a href="{% url 'profile' %}" class="logout">پروفایل</a>
+            <a href="{% url 'logout' %}" class="logout">خروج</a>
+        </div>
+    </header>
+
+    <!-- بخش اطلاعات کاربر -->
+    <section class="info">
+        <p>سلام، <strong>{{ user.username }}</strong> به سامانه خوش آمدید</p>
+    </section>
+
+    <!-- منوی اصلی -->
+    <main class="menu">
+        <a href="{% url 'customer_dashboard' %}" class="card">
+            <i data-feather="users" class="icon"></i>
+            <h3>مشتریان</h3>
+            <p>مدیریت حساب مشتری‌ها</p>
+        </a>
+
+        <a href="#" class="card">
+            <i data-feather="bar-chart-2" class="icon"></i>
+            <h3>گزارش‌ها</h3>
+            <p>مشاهده بدهی‌ها و پرداخت‌ها</p>
+        </a>
+
+        <a href="#" class="card">
+            <i data-feather="settings" class="icon"></i>
+            <h3>تنظیمات</h3>
+            <p>تنظیمات فروشگاه</p>
+        </a>
+
+        <a href="#" class="card">
+            <i data-feather="download-cloud" class="icon"></i>
+            <h3>پشتیبان‌گیری</h3>
+            <p>ذخیره اطلاعات</p>
+        </a>
+    </main>
+
+    <!-- فعال‌سازی آیکون‌ها -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            feather.replace({ width: 48, height: 48, 'stroke-width': 2.5 });
+        });
+    </script>
+</body>
+</html>

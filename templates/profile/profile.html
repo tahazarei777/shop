@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پروفایل کاربر</title>
+    <!-- فونت وزیرمتن -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #EDE9FE 0%, #C7D2FE 100%);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .customers-button {
+            display: inline-block;
+            background: #4ADE80;
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .customers-button:hover {
+            background: #22C55E;
+            transform: scale(1.05);
+        }
+
+        .profile-card {
+            background: #fff;
+            width: 95%;
+            max-width: 450px;
+            padding: 2rem 1.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-card::before {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(135deg, #4F46E5, #8B5CF6);
+            top: -50%;
+            left: -50%;
+            transform: rotate(25deg);
+            z-index: 0;
+            opacity: 0.1;
+        }
+
+        .profile-card h2 {
+            color: #4F46E5;
+            margin-bottom: 0.3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card p.description {
+            color: #6B7280;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-info {
+            text-align: right;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-info p {
+            font-size: 1rem;
+            margin: 0.6rem 0;
+        }
+
+        .profile-actions {
+            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .logout-button,
+        .edit-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+            text-align: center;
+        }
+
+        .logout-button {
+            background: #EF4444;
+            color: #fff;
+        }
+
+        .logout-button:hover {
+            background: #DC2626;
+            transform: scale(1.05);
+        }
+
+        .edit-button {
+            background: #4F46E5;
+            color: #fff;
+        }
+
+        .edit-button:hover {
+            background: #4338CA;
+            transform: scale(1.05);
+        }
+
+        .profile-card i {
+            stroke-width: 2.5;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        /* فرم ویرایش */
+        .edit-form {
+            display: none;
+            margin-top: 1.5rem;
+            text-align: right;
+        }
+
+        .edit-form input {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            margin-bottom: 0.8rem;
+            border-radius: 0.6rem;
+            border: 1px solid #D1D5DB;
+            font-size: 1rem;
+        }
+
+        .edit-form input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.2);
+        }
+
+        .edit-form button {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 0.75rem;
+            background: #10B981;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .edit-form button:hover {
+            background: #059669;
+            transform: scale(1.03);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-card">
+        <h2><i data-feather="user"></i> پروفایل شما</h2>
+        <p class="description">اطلاعات حساب کاربری شما</p>
+
+        <div class="profile-info">
+            <p><strong>نام کاربری:</strong> {{ user.username }}</p>
+            <p><strong>ایمیل:</strong> {{ user.email }}</p>
+            <p><strong>نام:</strong> {{ user.first_name }}</p>
+            <p><strong>نام خانوادگی:</strong> {{ user.last_name }}</p>
+            <p><strong>شماره تلفن:</strong> {{ user.profile.phone_number }}</p>
+            <p><strong>رمز عبور:</strong> *******</p>
+        </div>
+
+        <div class="profile-actions">
+            <a href="{% url 'shop_dashboard' %}" class="customers-button">مشاهده مشتریان</a>
+            <a href="{% url 'logout' %}" class="logout-button">خروج از حساب</a>
+            <button class="edit-button" onclick="toggleEdit()">ویرایش پروفایل</button>
+        </div>
+
+
+        <!-- فرم ویرایش -->
+        <div class="edit-form" id="editForm">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="text" name="first_name" placeholder="نام" value="{{ user.first_name }}" required>
+                <input type="text" name="last_name" placeholder="نام خانوادگی" value="{{ user.last_name }}" required>
+                <input type="text" name="phone_number" placeholder="شماره تلفن" value="{{ user.profile.phone_number }}">
+                <input type="password" name="password" placeholder="رمز عبور جدید">
+                <button type="submit">ذخیره تغییرات</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+
+        function toggleEdit() {
+            const form = document.getElementById('editForm');
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

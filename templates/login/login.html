@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+    <title>ورود به حساب</title>
+</head>
+<body>
+    <div class="login-card">
+        <h2>ورود به حساب</h2>
+        <p>برای مدیریت حساب فروشگاه خود وارد شوید</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="نام کاربری" required>
+            <input type="password" name="password" placeholder="رمز عبور" required>
+            <button type="submit">ورود</button>
+        </form>
+
+        {% if form.errors %}
+            <p style="color:#EF4444; margin-top:1rem;">نام کاربری یا رمز اشتباه است</p>
+        {% endif %}
+    </div>
+</body>
+</html>
