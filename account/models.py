@@ -1,12 +1,9 @@
 from django.db import models
-from django.conf import settings
+from django.contrib.auth.models import User
 
-class Shop (models.Model):
-    owner = models.OneToOneField( settings.AUTH_USER_MODEL,related_name="shop",null=True,blank=True, on_delete=models.CASCADE,verbose_name="")
-    name = models.CharField( max_length=50)
-    address = models.CharField( max_length=50)
-    phone = models.CharField( max_length=50)
-    created_at =models.DateTimeField(auto_now=False, auto_now_add=True)
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+
     def __str__(self):
-        return self.name
-    
+        return self.user.username

@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account',
     'customer',
-    'transaction',
     'widget_tweaks',
     'django.contrib.humanize',
 ]

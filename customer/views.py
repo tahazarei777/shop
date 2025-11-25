@@ -22,9 +22,7 @@ from django.http import HttpResponse
 from .models import Customer, Transaction
 @login_required
 def customer_dashboard(request):
-    """نمایش، فیلتر، مرتب‌سازی و افزودن مشتری"""
 
-    # افزودن مشتری جدید
     if request.method == "POST":
         form = CustomerForm(request.POST)
         if form.is_valid():
@@ -33,17 +31,14 @@ def customer_dashboard(request):
     else:
         form = CustomerForm()
 
-    # لیست مشتری‌ها
     customers = Customer.objects.all()
 
-    # جستجو
     query = request.GET.get("query")
     if query:
         customers = customers.filter(
             Q(first_name__icontains=query) | Q(last_name__icontains=query)
         )
 
-    # مرتب‌سازی
     sort_by = request.GET.get("sort_by")
     if sort_by == "amount_desc":
         customers = customers.order_by("-amount")
@@ -52,12 +47,10 @@ def customer_dashboard(request):
     elif sort_by == "alpha":
         customers = customers.order_by("first_name", "last_name")
 
-    # فیلتر نمایش تسویه‌شده‌ها
     show_paid = request.GET.get("show_paid")
     if not show_paid:
         customers = customers.filter(is_paid=False)
 
-    # مجموع بدهی
     total_debt = sum(c.amount for c in customers if not c.is_paid)
 
     context = {

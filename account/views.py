@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import ProfileForm
+from .models import Profile
 def login_view(request):
     """ورود کاربران"""
     if request.method == 'POST':
@@ -29,4 +32,20 @@ def shop_dashboard(request):
 
 @login_required
 def profile_view(request):
-    return render(request, "profile/profile.html")
+    user = request.user
+    profile, _ = Profile.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save(user=user)
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=profile, initial={
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        })
+
+    return render(request, 'profile/profile.html', {'form': form})
+
+
